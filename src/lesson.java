@@ -5,6 +5,18 @@ public class lesson {
     private String type;
     private int point;
 
+    public lesson(){
+
+    }
+
+    public lesson(String subject,String time,String date,String type,int point){
+        this.subject=subject;
+        this.time=time;
+        this.date=date;
+        this.type=type;
+        this.point=point;
+    }
+
     public String getSubject() {
         return subject;
     }
