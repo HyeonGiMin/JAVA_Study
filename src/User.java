@@ -2,28 +2,17 @@ import java.util.ArrayList;
 
 public class User {
 
-    public ArrayList<lesson> shopping = new ArrayList<>();  // 장바구니
-    public ArrayList<date> timetable =new ArrayList<>(); //시간표 확인
+    public ArrayList<lesson> timetable = new ArrayList<>();  // 시간표 확인
     private String name;
     private String number;
 
 
 
     public User(){
-        this.setDate();
-        this.setLesson();
-
-    }
-
-    public void setDate(){
-        timetable.add(new date("Mon"));
-
-    }
-    public void setLesson(){
-        lesson aa=new lesson("C++","6-7","Mon","major",3);
-        shopping.add(aa);
-        aa=new lesson("JAVA","1-4","Wen","major",3);
-        shopping.add(aa);
+      lesson aa=new lesson("C++","6-7","Mon","major",3);
+     // timetable.add(aa);
+      aa=new lesson("JAVA","1-4","Wen","major",3);
+     // timetable.add(aa);
     }
 
     public void putLesson(){
@@ -36,11 +25,12 @@ public class User {
 
     public void showLesson(){
         int i=1;
-        for(lesson s : shopping){
+        for(lesson s : timetable){
             System.out.println("-----------"+i+"--------------");
             System.out.println("강의명: "+s.getSubject());
             System.out.println("전공/교양: "+s.getType());
             System.out.println("시간"+s.getDate()+"/"+s.getTime());
+            System.out.println("학점: "+s.getPoint());
             System.out.println("학점: "+s.getPoint());
             System.out.println();
             i++;

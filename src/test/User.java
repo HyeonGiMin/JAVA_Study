@@ -4,14 +4,30 @@ package test;
 public class User {
 	private String name;
 	private UserType userType;
-	private String grade;
+	private int money;
 	private int hp;
-	
-	User(String name, String grade, UserType userType)
+
+	public int getMoney() {
+		return money;
+	}
+
+	public int getHp() {
+		return hp;
+	}
+
+	public void setHp(int hp) {
+		this.hp = hp;
+	}
+
+	public void setMoney(int money) {
+		this.money = money;
+	}
+
+	User(String name, int money, UserType userType)
 	{
 		this.name=name;
+		this.money=money;
 		this.userType=userType;
-		this.grade=grade;
 
 		switch(userType){
 			case HEALER:
@@ -42,14 +58,12 @@ public class User {
 		this.name = name;
 	}
 
-
-	public String getGrade() {
-		return grade;
+	public void showStatus(){
+		System.out.println(name+"님의 현재 상태");
+		System.out.println("HP: "+hp);
+		System.out.println("골드: "+money);
 	}
 
-	public void setGrade(String grade) {
-		this.grade = grade;
-	}
 
 	
 }
