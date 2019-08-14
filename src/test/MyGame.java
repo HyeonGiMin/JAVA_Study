@@ -39,7 +39,7 @@ public class MyGame implements pGame {
 	User player;
 
 	//서버와 주고 받는 메시지
-	String msg;
+	String msg=null;
 
 	//임의의 난수 생성;
 	Random rm= new Random();
@@ -50,6 +50,10 @@ public class MyGame implements pGame {
 	//현재 시간
 	SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
 	// ;
+
+	int total=0;
+	int i=0;
+	int totalhp=0;
 
 
 	public void setTitle(String title) {
@@ -64,12 +68,16 @@ public class MyGame implements pGame {
 		try {
 			sc=new Socket("127.0.0.1",5005);
 			br=new BufferedReader(new InputStreamReader(sc.getInputStream()));
+			System.out.println(("게임 실행"));
+			msg=br.readLine();
+			System.out.println(msg);
+
 			if((msg=br.readLine())!=null){
 				System.out.println("공지!!");
 				System.out.println(msg);
 			}
 
-			writer=new BufferedWriter(new FileWriter("/Users/hyeon/Documents/Temp/log.txt"));
+			writer=new BufferedWriter(new OutputStreamWriter(sc.getOutputStream()));
 
 			System.out.println(title+" : 메인화면 - 계정 선택");
 			System.out.println("========================");
@@ -122,10 +130,11 @@ public class MyGame implements pGame {
 
 			if(player.getHp()<=0){
 				System.out.println("HP가 0이하로 떨어졌습니다. 게임을 종료합니다");
+
 				writer.write(format1.format (System.currentTimeMillis())+"사용자 "+player.getName()+"죽음\n");
 				System.exit(0);
 			}
-			System.out.println(player.getName()+"님 환영합니다");
+			System.out.println("\n\n"+player.getName()+"님 환영합니다");
 			player.showStatus();
 			System.out.println("        행동 선택         ");
 			System.out.println("=========================");
@@ -150,6 +159,10 @@ public class MyGame implements pGame {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+
+	}
+
+	public void sendData(String data){
 
 	}
 
@@ -181,6 +194,7 @@ public class MyGame implements pGame {
 		// 선택된 메뉴에 따라 처리
 		switch(sel) {
 			case "h":
+				cart.clear();
 				showMenu();
 				break;
 			case "c":
@@ -192,21 +206,12 @@ public class MyGame implements pGame {
 				productList();
 		}
 	}
-	
-	/**
-	 * 결제 진행을 위한 체크아웃 처리 메서드
-	 */
-	public void checkOut() {
-		System.out.println("구매목록 저장");
-		System.out.println("=========================");
-		int total=0;
-		int i=0;
-		int totalhp=0;
+
+	public void showCart(){
+
 
 		int random=rm.nextInt(51)+50;  // 50~100 사이의 난수 생성
 		int lucky=rm.nextInt(2); //0: 회복 1: 악화
-
-
 		// 장바구니에 등록된 상품 정보 출력
 		for(Product p : cart) {
 			System.out.printf("[%d]%s(%s)\n",i++,p.pname,p.price);
@@ -222,6 +227,17 @@ public class MyGame implements pGame {
 			total = total + p.price;
 			totalhp =totalhp+p.point;
 		}
+	}
+	/**
+	 * 결제 진행을 위한 체크아웃 처리 메서드
+	 */
+	public void checkOut() {
+		System.out.println("\n장바구니");
+		System.out.println("=========================");
+
+		showCart();
+
+
 		System.out.println("=========================");
 
 
@@ -236,8 +252,16 @@ public class MyGame implements pGame {
 			case "q":
 					player.setMoney(total+player.getMoney()); //사용자 금액 변경
 					player.setHp(totalhp+player.getHp()); // 사용자의 상태 변경
+					for(Product p:cart){
+						p.printExtra();
+					}
 					System.out.println("## 결제가 완료 되었습니다. ##");
+					//카트 초기화 작업
+					cart.clear();
+					total=0;
+					totalhp=0;
 					showMenu();
+
 			case "p":productList();break;
 			default: checkOut();
 		}		
@@ -259,13 +283,13 @@ public class MyGame implements pGame {
 	 *  프로그램에서 사용하기 위한 예제 상품 등록 메서드
 	 */
 	public void genProduct() {
-		Portion cp = new Portion("갤럭시 노트5",1000,+50);
+		Portion cp = new Portion("빨간 물약",500,+30);
 		products[0] = cp;
-		cp = new Portion("갤럭시 노트5",1000,+50);
+		cp = new Portion("노란 물약",700,+50);
 		products[1] = cp;
-		Poison st =new Poison("갤럭시 노트5",1000,-50);
+		Poison st =new Poison("뱀 독",400,-50);
 		products[2] = st;
-		RandomDrink st2 = new RandomDrink(1000);
+		RandomDrink st2 = new RandomDrink(100);
 		products[3] = st2;
 	}
 }

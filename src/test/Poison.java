@@ -11,6 +11,6 @@ public class Poison extends Product {
 
     @Override
     public void printExtra() {
-        System.out.println("효과 "+point+ "만큼 악화");
+        System.out.println("효과 "+point+ "만큼 악화\n");
     }
 }

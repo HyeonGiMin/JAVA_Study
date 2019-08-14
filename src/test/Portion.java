@@ -11,6 +11,6 @@ public class Portion extends Product {
 
     @Override
     public void printExtra() {
-        System.out.println("효과 "+point+ "만큼 회복");
+        System.out.println("효과 "+point+ "만큼 회복\n");
     }
 }

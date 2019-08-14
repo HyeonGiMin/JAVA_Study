@@ -12,12 +12,12 @@ public class RandomDrink extends Product {
     @Override
     public void printExtra() {
         if(point<0){
-            System.out.println("효과 "+point+ "만큼 악화");
+            System.out.println("효과 "+point+ "만큼 악화\n");
         }else if(point==0){
-            System.out.println("효과 없음");
+            System.out.println("??\n");
 
         }else if(point >0){
-            System.out.println("효과 "+point+ "만큼 회복");
+            System.out.println("효과 "+point+ "만큼 회복\n");
         }
 
     }
