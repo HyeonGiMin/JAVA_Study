@@ -31,10 +31,10 @@ public class User {
 
 		switch(userType){
 			case HEALER:
-				this.hp=100;
+				this.hp=150;
 				break;
 			case DEALER:
-				this.hp=50;
+				this.hp=100;
 				break;
 			case TANKER:
 				this.hp=200;

@@ -1,9 +1,13 @@
 package test;
 
+import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
+import java.io.*;
+import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 // IShop 인터페이스를 구현한 MyShop 클래스
-public class MyShop implements PShop{
+public class MyGame implements pGame {
 	// 등록 회원 정보 배열
 	User[] users = new User[3];
 	
@@ -18,15 +22,34 @@ public class MyShop implements PShop{
 	
 	// 선택된 사용자 index 보관
 	int selUser;
-	
+
+	//서버와의 연결을 위한 소켓 객체
+	Socket sc;
+
+	//서버로 데이터 전송을 위한 스트림
+	BufferedWriter bw;
+
+	//서버로 부터 공지를 읽기위한 스트림
+	BufferedReader br;
+
 	// 개임 이름
 	String title;
 
 	//선택한 사용자
 	User player;
 
+	//서버와 주고 받는 메시지
+	String msg;
+
 	//임의의 난수 생성;
 	Random rm= new Random();
+
+	//로그 기록
+	BufferedWriter writer;
+
+	//현재 시간
+	SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
+	// ;
 
 
 	public void setTitle(String title) {
@@ -37,28 +60,46 @@ public class MyShop implements PShop{
 	 * 프로그램 메인 시작 메서드
 	 */
 	public void start() {
-		System.out.println(title+" : 메인화면 - 계정 선택");
-		System.out.println("========================");
-		int i=1;
-		
-		// 등록된 사용자 정보 출력
-		for(User u : users) {
-			System.out.printf("[%d]%s(%s)\n",i,u.getName(),u.getUserType());
-			i++;
+		//서버와 소켓 연결
+		try {
+			sc=new Socket("127.0.0.1",5005);
+			br=new BufferedReader(new InputStreamReader(sc.getInputStream()));
+			if((msg=br.readLine())!=null){
+				System.out.println("공지!!");
+				System.out.println(msg);
+			}
+
+			writer=new BufferedWriter(new FileWriter("/Users/hyeon/Documents/Temp/log.txt"));
+
+			System.out.println(title+" : 메인화면 - 계정 선택");
+			System.out.println("========================");
+			int i=1;
+
+			// 등록된 사용자 정보 출력
+			for(User u : users) {
+				System.out.printf("[%d]%s(%s)\n",i,u.getName(),u.getUserType());
+				i++;
+			}
+
+			System.out.println("[x]종 료");
+			System.out.print("선택 : ");
+			String sel = scan.next();
+			System.out.println("## "+sel+"선택 ##");
+
+			// 선택된 메뉴에 따라 처리
+			switch(sel) {
+				case "x":
+					sc.close();
+					System.exit(0);break;
+				default:
+					selUser = Integer.parseInt(sel)-1;
+					showMenu();
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		
-		System.out.println("[x]종 료");
-		System.out.print("선택 : ");
-		String sel = scan.next();
-		System.out.println("## "+sel+"선택 ##");
-		
-		// 선택된 메뉴에 따라 처리
-		switch(sel) {
-			case "x": System.exit(0);break;
-			default:
-				selUser = Integer.parseInt(sel)-1;
-				showMenu();
-		}
+
 	}
 
 
@@ -76,31 +117,38 @@ public class MyShop implements PShop{
 
 	public void showMenu(){
 		player=users[selUser];
-		if(player.getHp()<=0){
-			System.out.println("HP가 0이하로 떨어졌습니다. 게임을 종료합니다");
-			System.exit(0);
-		}
-		System.out.println(player.getName()+"님 환영합니다");
-		player.showStatus();
-		System.out.println("        행동 선택         ");
-		System.out.println("=========================");
-		System.out.println("[1]: 사냥");
-		System.out.println("[2]: 상점");
-		System.out.println("[x]: 종료");
-		System.out.print("선택 : ");
-		String sel = scan.next();
-		System.out.println("## "+sel+"선택 ##");
+		try {
+			writer.write(format1.format (System.currentTimeMillis())+"사용자 "+player.getName()+"로그인\n");
 
-		switch (sel){
-			case "1":
-				startGame();
-				break;
-			case "2":
-				productList();
-				break;
-			case "x":
-				System.out.println("게임을 종료합니다");
+			if(player.getHp()<=0){
+				System.out.println("HP가 0이하로 떨어졌습니다. 게임을 종료합니다");
+				writer.write(format1.format (System.currentTimeMillis())+"사용자 "+player.getName()+"죽음\n");
 				System.exit(0);
+			}
+			System.out.println(player.getName()+"님 환영합니다");
+			player.showStatus();
+			System.out.println("        행동 선택         ");
+			System.out.println("=========================");
+			System.out.println("[1]: 사냥");
+			System.out.println("[2]: 상점");
+			System.out.println("[x]: 종료");
+			System.out.print("선택 : ");
+			String sel = scan.next();
+			System.out.println("## "+sel+"선택 ##");
+
+			switch (sel){
+				case "1":
+					startGame();
+					break;
+				case "2":
+					productList();
+					break;
+				case "x":
+					System.out.println("게임을 종료합니다");
+					System.exit(0);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 
 	}
@@ -109,7 +157,7 @@ public class MyShop implements PShop{
 
 
 	/**
-	 * 상품 목록을 보고 상품을 선택해 장바구니에 넣기 위한 메서드
+	 * 물약 목록을 보고 구매하기 위한 메서드
 	 */
 	public void productList() {
 
@@ -125,7 +173,7 @@ public class MyShop implements PShop{
 			i++;
 		}
 		System.out.println("[h]메인화면");
-		System.out.println("[c]체크아웃");
+		System.out.println("[c]결제");
 		System.out.print("선택 : ");
 		String sel = scan.next();
 		System.out.println("## "+sel+"선택 ##");
@@ -149,7 +197,7 @@ public class MyShop implements PShop{
 	 * 결제 진행을 위한 체크아웃 처리 메서드
 	 */
 	public void checkOut() {
-		System.out.println(title+" : 체크아웃");
+		System.out.println("구매목록 저장");
 		System.out.println("=========================");
 		int total=0;
 		int i=0;
@@ -178,7 +226,7 @@ public class MyShop implements PShop{
 
 
 		// 합계 출력
-		System.out.println("합계: "+total+" 원 입니다.");
+		System.out.println("합계: "+total+" 골드 입니다.");
 		System.out.println("[p]이전 , [q]결제");
 		System.out.print("선택 : ");
 		String sel = scan.next();
