@@ -7,7 +7,7 @@ import java.net.Socket;
 
 public class GameServer {
     public static void main(String[] args) {
-
+        String msg;
 
         try {
             ServerSocket ssc=new ServerSocket(5005);
@@ -19,35 +19,44 @@ public class GameServer {
                 Socket s=ssc.accept();
                 BufferedReader br=new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter wr=new PrintWriter(new OutputStreamWriter(s.getOutputStream()),true);
-                BufferedWriter writer=new BufferedWriter(new FileWriter("/Users/hyeon/Documents/Temp/Serverlog.txt")); //로그 기록
+               // BufferedWriter writer=new BufferedWriter(new FileWriter("/Users/hyeon/Documents/Temp/Serverlog.txt")); //로그 기록
+                BufferedWriter writer=new BufferedWriter(new FileWriter("C:/Temp/log.txt",true)); //로그 기록
 
 
                 System.out.println("## 클라이언트 연결됨!!");
-                System.out.println("## 클라이언트 연결됨!!");
-
                 String notice="<공지>게임 세상에 오신것을 환영합니다\n";
-                System.out.println("## 클라이언트 연결됨!!");
+
 
                 wr.println(notice);
 
+                while ((msg=br.readLine())!="exit"){
 
+                    if(msg==null){
+                       break;
+                    }else {
+                        System.out.println(msg);
+                        writer.newLine();
+                        writer.write(msg);
+                        writer.flush();
+                    }
 
-
-                String msg= br.readLine();
-                if(msg=="exit"){
-                    br.close();
-                    s.close();
-                    System.exit(0);
                 }
-                System.out.println(msg);
-                writer.write(msg);
-
+                System.out.println("\n게임을 종료하였습니다.\n");
+                writer.write("게임을 종료하였습니다\n\n");
+                writer.write("=======================================");
+                writer.flush();
+                br.close();
+                wr.close();
+                writer.close();
 
 
             }
 
+
         } catch (IOException e) {
             e.printStackTrace();
+        }finally {
+
         }
 
 
