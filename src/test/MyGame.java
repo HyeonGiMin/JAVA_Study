@@ -135,8 +135,10 @@ public class MyGame implements pGame {
 		if(player.getHp()<=0){
 			System.out.println("HP가 0이하로 떨어졌습니다. 게임을 종료합니다");
 
-			writer.write(format1.format (System.currentTimeMillis())+"사용자 "+player.getName()+"죽음\n");
+			sendData(format1.format (System.currentTimeMillis())+"사용자 "+player.getName()+" 죽음\n");
+			endGmae();
 			System.exit(0);
+
 		}
 		System.out.println("\n\n"+player.getName()+"님 환영합니다");
 		player.showStatus();
@@ -203,9 +205,9 @@ public class MyGame implements pGame {
 			i++;
 		}
 
-		System.out.println("========장바구니=============");
+		System.out.println("==========장바구니=============");
 		if(cart.size()==0){
-			System.out.println("비어있음");
+			System.out.println("      비어있음");
 		}else {
 			showCart();
 		}

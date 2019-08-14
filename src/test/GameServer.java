@@ -42,7 +42,7 @@ public class GameServer {
 
                 }
                 System.out.println("\n게임을 종료하였습니다.\n");
-                writer.write("게임을 종료하였습니다\n\n");
+                writer.write("         게임을 종료하였습니다\n");
                 writer.write("=======================================");
                 writer.flush();
                 br.close();
