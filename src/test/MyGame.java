@@ -265,7 +265,13 @@ public class MyGame implements pGame {
 		System.out.println("\n장바구니");
 		System.out.println("=========================");
 
-		showCart();
+		for(Product p : cart) {
+			System.out.printf("[%d]%s(%s)\n",i,p.pname,p.price);
+			i++;
+
+			}
+
+
 
 
 		System.out.println("=========================");
@@ -280,19 +286,26 @@ public class MyGame implements pGame {
 		// 선택된 메뉴에 따라 처리
 		switch(sel) {
 			case "q":
-					player.setMoney(total+player.getMoney()); //사용자 금액 변경
-					player.setHp(totalhp+player.getHp()); // 사용자의 상태 변경
-					for(Product p:cart){
-						sendData(format1.format (System.currentTimeMillis())+" 사용자: "+player.getName()+" "+p.pname +" 구매\r\n");
-						p.printExtra();
+					if(player.getMoney()<total){
+						System.out.println("금액이 부족합니다");
+						checkOut();
+						break;
+					}else{
+						player.setMoney((total*-1)+player.getMoney()); //사용자 금액 변경
+						player.setHp(totalhp+player.getHp()); // 사용자의 상태 변경
+						for(Product p:cart){
+							sendData(format1.format (System.currentTimeMillis())+" 사용자: "+player.getName()+" "+p.pname +" 구매\r\n");
+							p.printExtra();
+						}
+						System.out.println("## 결제가 완료 되었습니다. ##");
+						//카트 초기화 작업
+						cart.clear();
+						total=0;
+						totalhp=0;
 					}
-					System.out.println("## 결제가 완료 되었습니다. ##");
-					//카트 초기화 작업
-					cart.clear();
-					total=0;
-					totalhp=0;
-					showMenu();
 
+					showMenu();
+					break;
 			case "p":productList();break;
 			default: checkOut();
 		}		

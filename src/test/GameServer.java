@@ -19,8 +19,8 @@ public class GameServer {
                 Socket s=ssc.accept();
                 BufferedReader br=new BufferedReader(new InputStreamReader(s.getInputStream()));
                 PrintWriter wr=new PrintWriter(new OutputStreamWriter(s.getOutputStream()),true);
-               // BufferedWriter writer=new BufferedWriter(new FileWriter("/Users/hyeon/Documents/Temp/Serverlog.txt")); //로그 기록
-                BufferedWriter writer=new BufferedWriter(new FileWriter("C:/Temp/log.txt",true)); //로그 기록
+                BufferedWriter writer=new BufferedWriter(new FileWriter("/Users/hyeon/Documents/Temp/Serverlog.txt")); //로그 기록
+               // BufferedWriter writer=new BufferedWriter(new FileWriter("C:/Temp/log.txt",true)); //로그 기록
 
 
                 System.out.println("## 클라이언트 연결됨!!");
