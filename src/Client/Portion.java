@@ -1,4 +1,4 @@
-package test;
+package Client;
 
 public class Portion extends Product {
 

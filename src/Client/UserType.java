@@ -1,4 +1,4 @@
-package test;
+package Client;
 
 public enum UserType {
     TANKER,

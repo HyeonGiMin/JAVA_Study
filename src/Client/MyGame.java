@@ -1,4 +1,4 @@
-package test;
+package Client;
 
 import java.io.*;
 import java.net.Socket;
@@ -220,6 +220,9 @@ public class MyGame implements pGame {
 		switch(sel) {
 			case "h":
 				cart.clear();
+				total=0;
+				totalHP =0;
+				cart.clear();
 				showMenu();
 				break;
 			case "c":
@@ -238,6 +241,10 @@ public class MyGame implements pGame {
 		int random=rm.nextInt(51)+50;  // 50~100 사이의 난수 생성
 		int lucky=rm.nextInt(2); //0: 회복 1: 악화
 		// 장바구니에 등록된 상품 정보 출력
+		if(total!=0 && totalHP!=0){
+			total=0;
+			totalHP=0;
+		}
 		for(Product p : cart) {
 			System.out.printf("[%d]%s(%s)\n",i,p.pname,p.price);
 
@@ -263,8 +270,8 @@ public class MyGame implements pGame {
 		System.out.println("=========================");
 
 		for(Product p : cart) {
-			System.out.printf("[%d]%s(%s)\n",i,p.pname,p.price);
-			i++;
+			System.out.printf("[%d]%s(%s)\n",++i,p.pname,p.price);
+
 
 			}
 

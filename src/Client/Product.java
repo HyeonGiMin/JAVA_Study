@@ -1,4 +1,4 @@
-package test;
+package Client;
 
 public abstract class Product {
     // 상품명과 가격 변수
