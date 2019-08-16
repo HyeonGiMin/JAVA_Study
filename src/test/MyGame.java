@@ -1,20 +1,19 @@
 package test;
 
-import javax.swing.plaf.basic.BasicInternalFrameTitlePane;
 import java.io.*;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-// IShop 인터페이스를 구현한 MyShop 클래스
+// pGame 인터페이스를 기반으로  MyGame 클래스 구현
 public class MyGame implements pGame {
-	// 등록 회원 정보 배열
+	// 회원 정보 배열
 	User[] users = new User[4];
 	
-	// 등록 상품 정보 배열
+	// 아이템 정보 배열
 	Product[] products = new Product[5];
 	
-	// 상품 추가를 위한 장바구니
+	// 아이템 추가를 위한 장바구니
 	ArrayList<Product> cart = new ArrayList<Product>();
 		
 	// 키보드 입력으로 문자열 입력받기 위한 Scanner 객체 생성
@@ -26,8 +25,8 @@ public class MyGame implements pGame {
 	//서버와의 연결을 위한 소켓 객체
 	Socket sc;
 
-	//서버로 데이터 전송을 위한 스트림
-	BufferedWriter bw;
+	//서버로 로그 데이터 전송을 위한 스트림
+	PrintWriter writer;
 
 	//서버로 부터 공지를 읽기위한 스트림
 	BufferedReader br;
@@ -44,16 +43,12 @@ public class MyGame implements pGame {
 	//임의의 난수 생성;
 	Random rm= new Random();
 
-	//로그 기록
-	PrintWriter writer;
-
 	//현재 시간
 	SimpleDateFormat format1 = new SimpleDateFormat ( "yyyy-MM-dd HH:mm:ss");
-	// ;
 
-	int total=0;
-	int i=0;
-	int totalhp=0;
+	private int total=0;
+	private int i=0;
+	private int totalHP =0;
 
 
 	public void setTitle(String title) {
@@ -66,8 +61,8 @@ public class MyGame implements pGame {
 	public void start() {
 		//서버와 소켓 연결
 		try {
-			sc=new Socket("127.0.0.1",5005);
-			br=new BufferedReader(new InputStreamReader(sc.getInputStream()));
+			sc=new Socket("127.0.0.1",5005); //로컬 서버로 접속
+			br=new BufferedReader(new InputStreamReader(sc.getInputStream())); //서버로 부터 데이터를 받기위한 스트림 생성
 
 			System.out.println(("게임 실행"));
 			System.out.println(("========================================="));
@@ -117,7 +112,7 @@ public class MyGame implements pGame {
 	public void startGame(){
 		System.out.println("사냥을 시작합니다");
 		sendData(format1.format (System.currentTimeMillis())+" 사용자: "+player.getName()+" 사냥 시작\r\n");
-		int getMoney=rm.nextInt(101)+100; //100~200 사이의 골드 획드
+		int getMoney=rm.nextInt(401)+100; //100~500 사이의 골드 획드
 		int getDamage=rm.nextInt(101);  //0~100 사이의 데미지 획득
 
 		System.out.println(getMoney+"골드를 획득했습니다");
@@ -135,7 +130,7 @@ public class MyGame implements pGame {
 		if(player.getHp()<=0){
 			System.out.println("HP가 0이하로 떨어졌습니다. 게임을 종료합니다");
 
-			sendData(format1.format (System.currentTimeMillis())+"사용자 "+player.getName()+" 죽음\n");
+			sendData(format1.format (System.currentTimeMillis())+" 사용자 "+player.getName()+" 죽음\n");
 			endGmae();
 			System.exit(0);
 
@@ -166,15 +161,17 @@ public class MyGame implements pGame {
 
 	}
 
+	//서버와의 연결 종료
 	public void endGmae(){
 		try {
 			sc.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		;
+
 	}
 
+	//서버로 데이터 전송
 	public void sendData(String data){
 		try {
 			writer=new PrintWriter(new OutputStreamWriter(sc.getOutputStream()),true);
@@ -253,7 +250,7 @@ public class MyGame implements pGame {
 				}
 			}
 			total = total + p.price;
-			totalhp =totalhp+p.point;
+			totalHP = totalHP +p.point;
 			i++;
 		}
 	}
@@ -292,7 +289,7 @@ public class MyGame implements pGame {
 						break;
 					}else{
 						player.setMoney((total*-1)+player.getMoney()); //사용자 금액 변경
-						player.setHp(totalhp+player.getHp()); // 사용자의 상태 변경
+						player.setHp(totalHP +player.getHp()); // 사용자의 상태 변경
 						for(Product p:cart){
 							sendData(format1.format (System.currentTimeMillis())+" 사용자: "+player.getName()+" "+p.pname +" 구매\r\n");
 							p.printExtra();
@@ -301,7 +298,7 @@ public class MyGame implements pGame {
 						//카트 초기화 작업
 						cart.clear();
 						total=0;
-						totalhp=0;
+						totalHP =0;
 					}
 
 					showMenu();
