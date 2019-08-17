@@ -50,14 +50,14 @@ public class MyGame implements pGame {
 	private int i=0;
 	private int totalHP =0;
 
-
+    @Override
 	public void setTitle(String title) {
 		this.title = title;
 	}
 	
-	/**
-	 * 프로그램 메인 시작 메서드
-	 */
+
+	 //프로그램 메인 시작 메서드
+	@Override
 	public void start() {
 		//서버와 소켓 연결
 		try {
@@ -108,7 +108,7 @@ public class MyGame implements pGame {
 
 	}
 
-
+	//사냥 시작
 	public void startGame(){
 		System.out.println("사냥을 시작합니다");
 		sendData(format1.format (System.currentTimeMillis())+" 사용자: "+player.getName()+" 사냥 시작\r\n");
@@ -123,6 +123,7 @@ public class MyGame implements pGame {
 		showMenu();
 	}
 
+	@Override
 	public void showMenu(){
 		player=users[selUser];
 		sendData(format1.format (System.currentTimeMillis())+" 사용자: "+player.getName()+" 현재 골드: "+player.getMoney()+" 현재 HP: "+player.getHp()+"\r\n");
@@ -162,6 +163,7 @@ public class MyGame implements pGame {
 	}
 
 	//서버와의 연결 종료
+
 	public void endGmae(){
 		try {
 			sc.close();
@@ -172,6 +174,7 @@ public class MyGame implements pGame {
 	}
 
 	//서버로 데이터 전송
+
 	public void sendData(String data){
 		try {
 			writer=new PrintWriter(new OutputStreamWriter(sc.getOutputStream()),true);
@@ -185,9 +188,9 @@ public class MyGame implements pGame {
 
 
 
-	/**
-	 * 물약 목록을 보고 구매하기 위한 메서드
-	 */
+
+	 // 물약 목록을 보고 구매하기 위한 메서드
+
 	public void productList() {
 
 
@@ -235,6 +238,7 @@ public class MyGame implements pGame {
 		}
 	}
 
+
 	public void showCart(){
 
 		int i=1;
@@ -262,22 +266,14 @@ public class MyGame implements pGame {
 		}
 	}
 
-	/**
-	 * 결제 진행을 위한 체크아웃 처리 메서드
-	 */
+
+	//구매를 진행하기 위한 메서드
 	public void checkOut() {
 		System.out.println("\n장바구니");
 		System.out.println("=========================");
-
 		for(Product p : cart) {
 			System.out.printf("[%d]%s(%s)\n",++i,p.pname,p.price);
-
-
 			}
-
-
-
-
 		System.out.println("=========================");
 
 
@@ -315,9 +311,9 @@ public class MyGame implements pGame {
 		}		
 	}
 	
-	/**
-	 *  프로그램에서 사용하기 위한 예제 사용자 등록 메서드
-	 */
+
+	//  프로그램에서 사용하기 위한 예제 사용자 등록 메서드
+	@Override
 	public void genUser() {
 		User user = new User("홍길동",2100,UserType.HEALER);
 		users[0] = user;
@@ -329,9 +325,9 @@ public class MyGame implements pGame {
 		users[3] = user;
 	}
 	
-	/**
-	 *  프로그램에서 사용하기 위한 예제 상품 등록 메서드
-	 */
+
+	 // 프로그램에서 사용하기 위한 예제 상품 등록 메서드
+	@Override
 	public void genProduct() {
 		Portion cp = new Portion("빨간 물약",500,+30);
 		products[0] = cp;
